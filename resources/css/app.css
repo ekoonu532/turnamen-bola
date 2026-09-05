@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+    --color-pitch-950: #0B140F;
+    --color-pitch-900: #0F1B14;
+    --color-pitch-800: #12201A;
+    --color-pitch-700: #1A2B22;
+    --color-pitch-600: #2A3F32;
+    --color-pitch-400: #8FA396;
+    --color-pitch-100: #EDF3EE;
+
+    --color-gold-400: #F2C744;
+    --color-gold-500: #E0B62E;
+
+    --color-lime-400: #4ADE80;
+
+    --color-clay-500: #E15252;
+
+    --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+    @apply bg-pitch-950 text-pitch-100 font-sans antialiased;
+}
+
+.font-tabular {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Momen masuk untuk hero — sekali saat load, tidak diulang di tiap elemen */
+@keyframes hero-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-hero-in {
+    animation: hero-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Scrollbar tipis untuk tiket horizontal */
+.scrollbar-thin::-webkit-scrollbar { height: 6px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: var(--color-pitch-600); border-radius: 999px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-hero-in { animation: none; }
+}
+
+/* ...isi yang sudah ada tetap dipertahankan... */
+
+/* resources/css/app.css — bagian @media print, tambahkan */
+
+@media print {
+    header,
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        background: #fff !important;
+        color: #000 !important;
+    }
+
+    * {
+        color: #000 !important;
+        border-color: #ccc !important;
+        background: #fff !important;
+        box-shadow: none !important;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #ccc !important;
+        padding: 6px 8px !important;
+    }
+
+    main {
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+
+    a[href]::after {
+        content: none !important;
+    }
+
+    .border-black {
+        border-color: #000 !important;
+    }
+}
+
+.bracket-connector {
+    position: absolute;
+    inset: 0;
+}
+.bracket-connector::before,
+.bracket-connector::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    border-style: solid;
+    border-color: var(--color-pitch-600);
+    border-width: 0;
+}
+.bracket-connector::before {
+    top: 0;
+    height: 50%;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-bottom-right-radius: 8px;
+}
+.bracket-connector::after {
+    bottom: 0;
+    height: 50%;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-top-right-radius: 8px;
+}
+
+@media print {
+    .overflow-x-auto {
+        overflow: visible !important;
+    }
+}

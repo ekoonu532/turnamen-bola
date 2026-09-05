@@ -1,0 +1,78 @@
+// resources/js/router/index.js
+import { createRouter, createWebHistory } from 'vue-router';
+
+const routes = [
+    // ── Publik (beranda) ──────────────────────────────
+    { path: '/', name: 'public.tournaments', component: () => import('../pages/public/TournamentsList.vue') },
+    { path: '/turnamen/:id', name: 'public.tournament', component: () => import('../pages/public/TournamentShow.vue') },
+    { path: '/turnamen/:id/jadwal', name: 'public.matches', component: () => import('../pages/public/Matches.vue') },
+    { path: '/turnamen/:id/klasemen', name: 'public.standings', component: () => import('../pages/public/Standings.vue') },
+    { path: '/turnamen/:id/bracket', name: 'public.bracket', component: () => import('../pages/public/Bracket.vue') },
+
+    // ── Auth ──────────────────────────────────────────
+    { path: '/login', name: 'login', component: () => import('../pages/Login.vue') },
+
+    // ── Admin ─────────────────────────────────────────
+    {
+        path: '/admin',
+        name: 'tournaments.index',
+        component: () => import('../pages/TournamentsIndex.vue'),
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/tournaments/:id',
+        name: 'tournaments.show',
+        component: () => import('../pages/TournamentShow.vue'),
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/tournaments/:id/teams',
+        name: 'teams.index',
+        component: () => import('../pages/TeamsIndex.vue'),
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/tournaments/:id/groups',
+        name: 'groups.manage',
+        component: () => import('../pages/GroupsManage.vue'),
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/tournaments/:id/matches',
+        name: 'matches.index',
+        component: () => import('../pages/MatchesIndex.vue'),
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/tournaments/:id/standings',
+        name: 'standings.index',
+        component: () => import('../pages/StandingsIndex.vue'),
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/tournaments/:id/bracket',
+        name: 'bracket.show',
+        component: () => import('../pages/BracketShow.vue'),
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/matches/:matchId',
+        name: 'matches.show',
+        component: () => import('../pages/MatchShow.vue'),
+        meta: { requiresAuth: true },
+    },
+];
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes,
+});
+
+router.beforeEach((to) => {
+    const token = localStorage.getItem('token');
+    if (to.meta.requiresAuth && !token) {
+        return { name: 'login' };
+    }
+});
+
+export default router;
