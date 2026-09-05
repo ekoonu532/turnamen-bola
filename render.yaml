@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: turnamen-bola
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: DB_CONNECTION
+        value: pgsql
+databases:
+  - name: turnamen-bola-db
+    databaseName: turnamen_bola
+    plan: free
