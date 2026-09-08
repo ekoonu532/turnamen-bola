@@ -27,9 +27,13 @@ return [
 
     'max_age' => 0,
 
+    // config/cors.php
+
     'allowed_origins' => [
-        'http://localhost:5173',    // Vite dev server
-        'http://turnamen-bola.test', // kalau frontend juga di-serve dari Laragon
+        'http://localhost:5173',
+        'http://turnamen-bola.test',
+        'https://tournament-bola.cloud',
+        'https://www.tournament-bola.cloud',
     ],
 
     'supports_credentials' => true, // penting kalau nanti pakai Sanctum SPA auth
