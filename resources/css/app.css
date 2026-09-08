@@ -126,4 +126,20 @@ body {
     .overflow-x-auto {
         overflow: visible !important;
     }
+    .print-color,
+    .print-color * {
+        color: revert !important;
+        background: revert !important;
+        border-color: revert !important;
+        box-shadow: revert !important;
+    }
+    .print-page-break {
+        page-break-before: always;
+        break-before: page;
+    }
+
+    .print-avoid-break {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
 }

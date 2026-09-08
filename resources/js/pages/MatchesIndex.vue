@@ -67,12 +67,21 @@
 
             <!-- ── Sudah ada jadwal ── -->
             <div v-else-if="!loading" class="space-y-6">
-                <div v-for="(group, stage) in matchesByStage" :key="stage">
+                <div
+                    v-for="(group, stage) in matchesByStage"
+                    :key="stage"
+                    :class="{ 'print-page-break': stage === 'semifinal' }"
+                >
                     <h2 class="font-display font-semibold text-sm text-pitch-400 mb-3 uppercase tracking-wide">
                         {{ stageLabels[stage] ?? stage }}
                     </h2>
                     <div class="space-y-3">
-                        <MatchCard v-for="match in group" :key="match.id" :match="match" />
+                        <MatchCard
+                            v-for="match in group"
+                            :key="match.id"
+                            :match="match"
+                            class="print-avoid-break"
+                        />
                     </div>
                 </div>
 

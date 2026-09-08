@@ -33,7 +33,7 @@ class TournamentController extends Controller
 
     public function show(Tournament $tournament)
     {
-        return $tournament->load('groups', 'teams', 'matches');
+        return $tournament->load('groups.teams', 'teams', 'matches');
     }
 
     public function update(Request $request, Tournament $tournament)
@@ -83,5 +83,5 @@ class TournamentController extends Controller
         ]);
     }
 
-    
+
 }

@@ -61,6 +61,12 @@ const routes = [
         component: () => import('../pages/MatchShow.vue'),
         meta: { requiresAuth: true },
     },
+    {
+        path: '/admin/tournaments/:id/groups/pengumuman',
+        name: 'groups.announcement',
+        component: () => import('../pages/GroupAnnouncement.vue'),
+        meta: { requiresAuth: true },
+    },
 ];
 
 const router = createRouter({

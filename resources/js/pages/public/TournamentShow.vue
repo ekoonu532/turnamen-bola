@@ -56,7 +56,7 @@ import { useRoute } from 'vue-router';
 import api from '../../lib/api';
 import PublicTopBar from '../../components/PublicTopBar.vue';
 import StatusBadge from '../../components/StatusBadge.vue';
-import Footer from '../components/Footer.vue';
+import Footer from '../../components/Footer.vue';
 
 const route = useRoute();
 const tournamentId = route.params.id;

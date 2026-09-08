@@ -59,11 +59,17 @@
 
             <!-- ── Grup sudah ada ── -->
             <div v-else-if="!loading" class="space-y-6">
-                <div class="flex justify-end">
-                    <button @click="handleReset" class="text-sm text-pitch-400 hover:text-clay-500 transition">
-                        Atur ulang grup
-                    </button>
-                </div>
+                <div class="flex justify-between no-print">
+                <router-link
+                    :to="{ name: 'groups.announcement', params: { id: tournamentId } }"
+                    class="text-sm text-gold-400 hover:underline"
+                >
+                    Cetak Pengumuman Grup
+                </router-link>
+                <button @click="handleReset" class="text-sm text-pitch-400 hover:text-clay-500 transition">
+                    Atur ulang grup
+                </button>
+            </div>
 
                 <div v-for="group in groups" :key="group.id" class="border border-pitch-600 rounded-lg p-4 sm:p-5">
                     <div class="flex items-center justify-between mb-3">

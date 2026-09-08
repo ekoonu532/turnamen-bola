@@ -37,7 +37,7 @@ import { useRoute } from 'vue-router';
 import api from '../../lib/api';
 import PublicTopBar from '../../components/PublicTopBar.vue';
 import MatchCard from '../../components/MatchCard.vue';
-import Footer from '../components/Footer.vue';
+import Footer from '../../components/Footer.vue';
 
 const route = useRoute();
 const tournamentId = route.params.id;
