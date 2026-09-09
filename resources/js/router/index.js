@@ -4,11 +4,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 const routes = [
     // ── Publik (beranda) ──────────────────────────────
     { path: '/', name: 'public.tournaments', component: () => import('../pages/public/TournamentsList.vue') },
-    { path: '/turnamen/:id', name: 'public.tournament', component: () => import('../pages/public/TournamentShow.vue') },
-    { path: '/turnamen/:id/jadwal', name: 'public.matches', component: () => import('../pages/public/Matches.vue') },
-    { path: '/turnamen/:id/klasemen', name: 'public.standings', component: () => import('../pages/public/Standings.vue') },
-    { path: '/turnamen/:id/bracket', name: 'public.bracket', component: () => import('../pages/public/Bracket.vue') },
-
+    { path: '/turnamen/:slug', name: 'public.tournament', component: () => import('../pages/public/TournamentShow.vue') },
+    { path: '/turnamen/:slug/jadwal', name: 'public.matches', component: () => import('../pages/public/Matches.vue') },
+    { path: '/turnamen/:slug/klasemen', name: 'public.standings', component: () => import('../pages/public/Standings.vue') },
+    { path: '/turnamen/:slug/bracket', name: 'public.bracket', component: () => import('../pages/public/Bracket.vue') },
     // ── Auth ──────────────────────────────────────────
     { path: '/login', name: 'login', component: () => import('../pages/Login.vue') },
 

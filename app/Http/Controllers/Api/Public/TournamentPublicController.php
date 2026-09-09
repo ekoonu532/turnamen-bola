@@ -21,7 +21,7 @@ class TournamentPublicController extends Controller
         return Tournament::whereIn('status', ['registration', 'ongoing', 'finished'])
             ->orderByDesc('is_featured')
             ->latest()
-            ->get(['id', 'name', 'description', 'start_date', 'end_date', 'status', 'is_featured']);
+            ->get(['id', 'name', 'slug', 'description', 'start_date', 'end_date', 'status', 'is_featured']);
     }
 
     /**

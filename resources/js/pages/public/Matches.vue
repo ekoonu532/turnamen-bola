@@ -4,7 +4,7 @@
         <PublicTopBar />
 
         <main class="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-            <router-link :to="{ name: 'public.tournament', params: { id: tournamentId } }" class="text-sm text-pitch-400 hover:text-gold-400 transition">
+            <router-link :to="{ name: 'public.tournament', params: { slug: tournamentSlug } }"> class="text-sm text-pitch-400 hover:text-gold-400 transition">
                 &larr; Kembali
             </router-link>
 
@@ -43,6 +43,7 @@ const route = useRoute();
 const tournamentId = route.params.id;
 const matches = ref([]);
 const loading = ref(true);
+const tournamentSlug = route.params.slug;
 
 const stageLabels = {
     group: 'Fase Grup',
@@ -66,7 +67,7 @@ const matchesByStage = computed(() => {
 });
 
 onMounted(async () => {
-    const { data } = await api.get(`/public/tournaments/${tournamentId}/matches`);
+    const { data } = await api.get(`/public/tournaments/${tournamentSlug}/matches`);
     matches.value = data;
     loading.value = false;
 });

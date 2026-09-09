@@ -3,36 +3,44 @@
     <component
         :is="clickable ? 'router-link' : 'div'"
         v-bind="clickable ? { to: { name: 'matches.show', params: { matchId: match.id } } } : {}"
-        class="border border-pitch-600 rounded-lg p-4 flex items-center justify-between gap-4 transition block"
+        class="border border-pitch-600 rounded-lg p-3 sm:p-4 transition block"
         :class="clickable ? 'hover:border-gold-400/50 hover:bg-pitch-800/40' : ''"
     >
-        <div class="flex-1 min-w-0">
-            <p class="text-xs text-pitch-400 mb-2">
+        <div class="flex items-center justify-between gap-2 mb-2">
+            <p class="text-[11px] sm:text-xs text-pitch-400 truncate">
                 {{ match.group?.name ?? stageLabel }}
                 <span v-if="match.scheduled_at"> · {{ formatDate(match.scheduled_at) }}</span>
             </p>
-            <div class="flex items-center justify-between gap-3">
-                <span class="truncate" :class="{ 'text-gold-400 font-medium': match.winner_team_id === match.home_team_id }">
-                    {{ match.home_team?.name ?? 'TBD' }}
-                </span>
-
-                <div class="font-display font-tabular text-lg shrink-0 text-center">
-                    <template v-if="match.status === 'finished' || match.status === 'walkover'">
-                        <div>{{ match.home_score }} – {{ match.away_score }}</div>
-                        <div v-if="match.stage !== 'group' && match.home_penalty !== null" class="text-xs text-pitch-400 font-sans">
-                            ({{ match.home_penalty }}-{{ match.away_penalty }} pen)
-                        </div>
-                    </template>
-                    <template v-else>vs</template>
-                </div>
-
-                <span class="truncate text-right" :class="{ 'text-gold-400 font-medium': match.winner_team_id === match.away_team_id }">
-                    {{ match.away_team?.name ?? 'TBD' }}
-                </span>
-            </div>
+            <StatusBadge :status="matchStatus" class="shrink-0" />
         </div>
 
-        <StatusBadge :status="matchStatus" class="shrink-0" />
+        <div class="flex items-center gap-2 sm:gap-3">
+            <span
+                class="flex-1 min-w-0 truncate text-sm sm:text-base"
+                :class="{ 'text-gold-400 font-medium': match.winner_team_id === match.home_team_id }"
+            >
+                {{ match.home_team?.name ?? 'TBD' }}
+            </span>
+
+            <div class="shrink-0 text-center font-display font-tabular text-base sm:text-lg w-16 sm:w-20">
+                <template v-if="match.status === 'finished' || match.status === 'walkover'">
+                    <div>{{ match.home_score }} – {{ match.away_score }}</div>
+                    <div v-if="match.stage !== 'group' && match.home_penalty !== null" class="text-[10px] sm:text-xs text-pitch-400 font-sans">
+                        ({{ match.home_penalty }}-{{ match.away_penalty }} pen)
+                    </div>
+                </template>
+                <template v-else>
+                    <span class="text-pitch-400 text-sm">vs</span>
+                </template>
+            </div>
+
+            <span
+                class="flex-1 min-w-0 truncate text-sm sm:text-base text-right"
+                :class="{ 'text-gold-400 font-medium': match.winner_team_id === match.away_team_id }"
+            >
+                {{ match.away_team?.name ?? 'TBD' }}
+            </span>
+        </div>
     </component>
 </template>
 

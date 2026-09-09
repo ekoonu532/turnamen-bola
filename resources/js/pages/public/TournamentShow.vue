@@ -13,24 +13,25 @@
                 {{ formatDate(tournament.start_date) }} — {{ formatDate(tournament.end_date) }}
             </p>
 
-            <div class="grid grid-cols-3 gap-3 mb-10">
+            <!-- ganti grid-cols-3 gap-3 jadi ini -->
+            <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-10">
                 <router-link
                     :to="{ name: 'public.matches', params: { id: tournamentId } }"
-                    class="border border-pitch-600 rounded-lg p-4 text-center hover:border-gold-400/50 hover:bg-pitch-800/40 transition"
+                    class="border border-pitch-600 rounded-lg p-3 sm:p-4 text-center hover:border-gold-400/50 hover:bg-pitch-800/40 transition"
                 >
-                    <p class="text-sm font-medium">Jadwal</p>
+                    <p class="text-xs sm:text-sm font-medium">Jadwal</p>
                 </router-link>
                 <router-link
                     :to="{ name: 'public.standings', params: { id: tournamentId } }"
-                    class="border border-pitch-600 rounded-lg p-4 text-center hover:border-gold-400/50 hover:bg-pitch-800/40 transition"
+                    class="border border-pitch-600 rounded-lg p-3 sm:p-4 text-center hover:border-gold-400/50 hover:bg-pitch-800/40 transition"
                 >
-                    <p class="text-sm font-medium">Klasemen</p>
+                    <p class="text-xs sm:text-sm font-medium">Klasemen</p>
                 </router-link>
                 <router-link
                     :to="{ name: 'public.bracket', params: { id: tournamentId } }"
-                    class="border border-pitch-600 rounded-lg p-4 text-center hover:border-gold-400/50 hover:bg-pitch-800/40 transition"
+                    class="border border-pitch-600 rounded-lg p-3 sm:p-4 text-center hover:border-gold-400/50 hover:bg-pitch-800/40 transition"
                 >
-                    <p class="text-sm font-medium">Bracket</p>
+                    <p class="text-xs sm:text-sm font-medium">Bracket</p>
                 </router-link>
             </div>
 
@@ -61,6 +62,7 @@ import Footer from '../../components/Footer.vue';
 const route = useRoute();
 const tournamentId = route.params.id;
 const tournament = ref(null);
+const tournamentSlug = route.params.slug;
 
 function formatDate(d) {
     if (!d) return '';
@@ -68,7 +70,7 @@ function formatDate(d) {
 }
 
 onMounted(async () => {
-    const { data } = await api.get(`/public/tournaments/${tournamentId}`);
+    const { data } = await api.get(`/public/tournaments/${tournamentSlug}`);
     tournament.value = data;
 });
 </script>

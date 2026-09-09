@@ -59,8 +59,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::prefix('public')->middleware('throttle:60,1')->group(function () {
     Route::get('/tournaments', [TournamentPublicController::class, 'index']);
-    Route::get('/tournaments/{tournament}', [TournamentPublicController::class, 'show']);
-    Route::get('/tournaments/{tournament}/matches', [TournamentPublicController::class, 'matches']);
-    Route::get('/tournaments/{tournament}/standings', [TournamentPublicController::class, 'standings']);
-    Route::get('/tournaments/{tournament}/bracket', [TournamentPublicController::class, 'bracket']);
+    Route::get('/tournaments/{tournament:slug}', [TournamentPublicController::class, 'show']);
+    Route::get('/tournaments/{tournament:slug}/matches', [TournamentPublicController::class, 'matches']);
+    Route::get('/tournaments/{tournament:slug}/standings', [TournamentPublicController::class, 'standings']);
+    Route::get('/tournaments/{tournament:slug}/bracket', [TournamentPublicController::class, 'bracket']);
 });

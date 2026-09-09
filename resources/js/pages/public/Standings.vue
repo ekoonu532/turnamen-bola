@@ -4,7 +4,7 @@
         <PublicTopBar />
 
         <main class="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-            <router-link :to="{ name: 'public.tournament', params: { id: tournamentId } }" class="text-sm text-pitch-400 hover:text-gold-400 transition">
+            <router-link :to="{ name: 'public.tournament', params: { slug: tournamentSlug } }" class="text-sm text-pitch-400 hover:text-gold-400 transition">
                 &larr; Kembali
             </router-link>
 
@@ -54,7 +54,6 @@
                 </div>
             </div>
         </main>
-        <Footer />
     </div>
 </template>
 
@@ -63,15 +62,14 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import api from '../../lib/api';
 import PublicTopBar from '../../components/PublicTopBar.vue';
-import Footer from '../../components/Footer.vue';
 
 const route = useRoute();
-const tournamentId = route.params.id;
+const tournamentSlug = route.params.slug;
 const standings = ref([]);
 const loading = ref(true);
 
 onMounted(async () => {
-    const { data } = await api.get(`/public/tournaments/${tournamentId}/standings`);
+    const { data } = await api.get(`/public/tournaments/${tournamentSlug}/standings`);
     standings.value = data;
     loading.value = false;
 });
