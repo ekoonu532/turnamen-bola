@@ -4,7 +4,7 @@
         <PublicTopBar />
 
         <main class="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-            <router-link :to="{ name: 'public.tournament', params: { slug: tournamentSlug } }"> class="text-sm text-pitch-400 hover:text-gold-400 transition">
+            <router-link :to="{ name: 'public.tournament', params: { slug: tournamentSlug } }" class="text-sm text-pitch-400 hover:text-gold-400 transition">
                 &larr; Kembali
             </router-link>
 
