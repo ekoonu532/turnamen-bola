@@ -1,10 +1,10 @@
 <!-- resources/js/pages/TournamentShow.vue -->
 <template>
     <div v-if="tournament">
-        <TopBar show-logout :user-name="auth.user?.name" @logout="handleLogout" />
+        <TopBar show-logout :user-name="auth.user?.name" @logout="handleLogout" class="no-print" />
 
         <main class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-            <router-link :to="{ name: 'tournaments.index' }" class="text-sm text-pitch-400 hover:text-gold-400 transition">
+            <router-link :to="{ name: 'tournaments.index' }" class="no-print text-sm text-pitch-400 hover:text-gold-400 transition">
                 &larr; Semua turnamen
             </router-link>
 
@@ -27,13 +27,22 @@
                 Turnamen berstatus "Draf" tidak muncul di halaman publik. Ubah ke "Pendaftaran" atau "Berlangsung" agar bisa dilihat umum.
             </p>
 
-            <button
-                @click="toggleFeatured"
-                class="text-sm mb-6 sm:mb-8 transition"
-                :class="tournament.is_featured ? 'text-gold-400' : 'text-pitch-400 hover:text-gold-400'"
-            >
-                {{ tournament.is_featured ? '★ Tampilan utama di beranda publik' : '☆ Jadikan tampilan utama di beranda publik' }}
-            </button>
+            <div class="flex flex-wrap items-center gap-4 mb-6 sm:mb-8">
+                <button
+                    @click="toggleFeatured"
+                    class="text-sm transition"
+                    :class="tournament.is_featured ? 'text-gold-400' : 'text-pitch-400 hover:text-gold-400'"
+                >
+                    {{ tournament.is_featured ? '★ Tampilan utama di beranda publik' : '☆ Jadikan tampilan utama di beranda publik' }}
+                </button>
+
+                <button
+                    @click="handleDelete"
+                    class="text-sm text-pitch-400 hover:text-clay-500 transition"
+                >
+                    Hapus Turnamen
+                </button>
+            </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
                 <router-link
@@ -77,6 +86,7 @@
                 </router-link>
             </div>
         </main>
+
         <Footer />
     </div>
 </template>
@@ -111,6 +121,16 @@ async function toggleFeatured() {
         await api.post(`/tournaments/${tournament.value.id}/feature`);
     }
     await fetchTournament();
+}
+
+async function handleDelete() {
+    const confirmed = confirm(
+        `Hapus turnamen "${tournament.value.name}"? Semua tim, grup, jadwal, dan hasil pertandingan yang terkait akan ikut terhapus permanen. Tindakan ini tidak bisa dibatalkan.`
+    );
+    if (!confirmed) return;
+
+    await api.delete(`/tournaments/${tournament.value.id}`);
+    router.push({ name: 'tournaments.index' });
 }
 
 async function handleLogout() {
