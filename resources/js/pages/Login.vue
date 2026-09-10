@@ -42,8 +42,8 @@
                 </button>
             </form>
         </div>
-        <Footer />
     </div>
+    <Footer />
 </template>
 
 <script setup>

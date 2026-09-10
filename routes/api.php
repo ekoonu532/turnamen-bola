@@ -9,6 +9,9 @@ use App\Http\Controllers\Api\TournamentDrawController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\Api\Public\TournamentPublicController;
+use App\Http\Controllers\Api\MatchEventController;
+use App\Http\Controllers\Api\TopScorerController;
+use App\Http\Controllers\PlayerController;
 use Illuminate\Support\Facades\Route;
 
 // ── Auth ──────────────────────────────────────────────
@@ -55,6 +58,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/tournaments/{tournament}/feature', [TournamentController::class, 'feature']);
     Route::delete('/tournaments/{tournament}/feature', [TournamentController::class, 'unfeature']);
+
+    // di dalam middleware auth:sanctum group, tambahkan:
+    Route::apiResource('teams.players', PlayerController::class)
+    ->shallow()
+    ->except(['show']);
+
+    Route::get('/matches/{match}/events', [MatchEventController::class, 'index']);
+    Route::post('/matches/{match}/events', [MatchEventController::class, 'store']);
+    Route::delete('/matches/{match}/events/{event}', [MatchEventController::class, 'destroy']);
+
+    Route::get('/tournaments/{tournament}/top-scorers', [TopScorerController::class, 'index']);
+
 });
 
 Route::prefix('public')->middleware('throttle:60,1')->group(function () {
@@ -63,4 +78,5 @@ Route::prefix('public')->middleware('throttle:60,1')->group(function () {
     Route::get('/tournaments/{tournament:slug}/matches', [TournamentPublicController::class, 'matches']);
     Route::get('/tournaments/{tournament:slug}/standings', [TournamentPublicController::class, 'standings']);
     Route::get('/tournaments/{tournament:slug}/bracket', [TournamentPublicController::class, 'bracket']);
+    Route::get('/tournaments/{tournament:slug}/top-scorers', [TopScorerController::class, 'index']);
 });

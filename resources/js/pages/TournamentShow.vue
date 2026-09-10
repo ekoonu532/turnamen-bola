@@ -84,6 +84,13 @@
                     <p class="font-display font-bold text-xl sm:text-2xl">🏆</p>
                     <p class="text-sm text-pitch-400 mt-1">Bracket</p>
                 </router-link>
+                <router-link
+                    :to="{ name: 'topscorers.index', params: { id: tournament.id } }"
+                    class="border border-pitch-600 rounded-lg p-4 sm:p-5 hover:border-gold-400/50 hover:bg-pitch-800/40 transition"
+                >
+                    <p class="font-display font-bold text-xl sm:text-2xl">⚽</p>
+                    <p class="text-sm text-pitch-400 mt-1">Top Scorer</p>
+                </router-link>
             </div>
         </main>
 

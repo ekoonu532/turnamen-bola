@@ -77,6 +77,77 @@
                 </button>
             </div>
 
+            <!-- ── Pencetak Gol ── -->
+            <div v-if="match.status === 'finished'" class="mt-6 border border-pitch-600 rounded-lg p-4 sm:p-5">
+                <p class="text-sm text-pitch-400 mb-3">Pencetak Gol</p>
+
+                <form @submit.prevent="handleAddEvent" class="space-y-2 mb-4">
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <select
+                            v-model="eventForm.team_id"
+                            @change="loadPlayersForTeam"
+                            required
+                            class="flex-1 bg-pitch-800 border border-pitch-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400"
+                        >
+                            <option value="" disabled>Pilih tim</option>
+                            <option :value="match.home_team_id">{{ match.home_team?.name }}</option>
+                            <option :value="match.away_team_id">{{ match.away_team?.name }}</option>
+                        </select>
+
+                        <select
+                            v-model="eventForm.player_id"
+                            :disabled="!eventForm.team_id"
+                            required
+                            class="flex-1 bg-pitch-800 border border-pitch-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400 disabled:opacity-50"
+                        >
+                            <option value="" disabled>Pilih pemain</option>
+                            <option v-for="p in eventTeamPlayers" :key="p.id" :value="p.id">{{ p.name }}</option>
+                            <option value="__new__">+ Pemain baru...</option>
+                        </select>
+
+                        <input
+                            v-model.number="eventForm.minute"
+                            type="number"
+                            placeholder="Menit"
+                            min="0"
+                            max="120"
+                            class="w-full sm:w-20 bg-pitch-800 border border-pitch-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400"
+                        />
+                    </div>
+
+                    <!-- Muncul kalau pilih "+ Pemain baru..." -->
+                    <div v-if="eventForm.player_id === '__new__'" class="flex gap-2">
+                        <input
+                            v-model="newPlayerName"
+                            type="text"
+                            placeholder="Nama pemain baru"
+                            required
+                            class="flex-1 bg-pitch-800 border border-gold-400/40 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400"
+                        />
+                    </div>
+
+                    <p v-if="eventError" class="text-xs text-clay-500">{{ eventError }}</p>
+
+                    <button type="submit" class="w-full sm:w-auto bg-gold-400 text-pitch-950 font-semibold px-4 py-2 rounded-md hover:bg-gold-500 transition">
+                        + Catat Gol
+                    </button>
+                </form>
+
+                <ul v-if="events.length" class="space-y-2 text-sm">
+                    <li v-for="e in events" :key="e.id" class="flex items-center justify-between">
+                        <span>
+                            ⚽ {{ e.player?.name }}
+                            <span class="text-pitch-400">({{ e.team?.name }})</span>
+                            <span v-if="e.minute" class="text-pitch-400"> — {{ e.minute }}'</span>
+                        </span>
+                        <button @click="handleDeleteEvent(e)" class="text-xs text-pitch-400 hover:text-clay-500 transition">
+                            Hapus
+                        </button>
+                    </li>
+                </ul>
+                <p v-else class="text-sm text-pitch-400">Belum ada gol tercatat.</p>
+            </div>
+
             <!-- ── Walkover ── -->
             <div v-if="match.home_team_id && match.away_team_id" class="mt-6 border border-pitch-600 rounded-lg p-4 sm:p-5">
                 <p class="text-sm text-pitch-400 mb-3">Walkover (tim tidak hadir)</p>
@@ -101,7 +172,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import api from '../lib/api';
@@ -122,6 +193,13 @@ const awayPenalty = ref(null);
 const error = ref('');
 const message = ref('');
 const saving = ref(false);
+
+// ── State untuk pencatatan gol ──
+const events = ref([]);
+const eventForm = reactive({ team_id: '', player_id: '', minute: null });
+const eventTeamPlayers = ref([]);
+const newPlayerName = ref('');
+const eventError = ref('');
 
 const stageLabels = {
     group: 'Fase Grup',
@@ -158,6 +236,54 @@ async function fetchMatch() {
     awayPenalty.value = data.away_penalty;
 }
 
+async function fetchEvents() {
+    const { data } = await api.get(`/matches/${matchId}/events`);
+    events.value = data;
+}
+
+async function loadPlayersForTeam() {
+    eventForm.player_id = '';
+    newPlayerName.value = '';
+    const { data } = await api.get(`/teams/${eventForm.team_id}/players`);
+    eventTeamPlayers.value = data;
+}
+
+async function handleAddEvent() {
+    eventError.value = '';
+    try {
+        let playerId = eventForm.player_id;
+
+        // Kalau pilih "pemain baru", buat dulu pemainnya sebelum catat gol
+        if (playerId === '__new__') {
+            const { data: newPlayer } = await api.post(`/teams/${eventForm.team_id}/players`, {
+                name: newPlayerName.value,
+            });
+            playerId = newPlayer.id;
+            eventTeamPlayers.value.push(newPlayer);
+        }
+
+        await api.post(`/matches/${matchId}/events`, {
+            team_id: eventForm.team_id,
+            player_id: playerId,
+            type: 'goal',
+            minute: eventForm.minute,
+        });
+
+        eventForm.player_id = '';
+        eventForm.minute = null;
+        newPlayerName.value = '';
+        await fetchEvents();
+    } catch (e) {
+        eventError.value = e.response?.data?.message || 'Gagal mencatat gol.';
+    }
+}
+
+async function handleDeleteEvent(event) {
+    if (!confirm('Hapus catatan gol ini?')) return;
+    await api.delete(`/matches/${matchId}/events/${event.id}`);
+    await fetchEvents();
+}
+
 async function handleSaveScore() {
     const confirmed = confirm(
         `Simpan skor ${match.value.home_team?.name ?? 'TBD'} ${homeScore.value} - ${awayScore.value} ${match.value.away_team?.name ?? 'TBD'}?`
@@ -178,14 +304,11 @@ async function handleSaveScore() {
         }
 
         await api.patch(`/matches/${matchId}/score`, payload);
-
-        if (match.value.stage === 'group') {
-            router.push({ name: 'standings.index', params: { id: match.value.tournament_id } });
-        } else {
-            router.push({ name: 'bracket.show', params: { id: match.value.tournament_id } });
-        }
+        await fetchMatch();
+        message.value = 'Skor berhasil disimpan.';
     } catch (e) {
         error.value = e.response?.data?.message || 'Gagal menyimpan skor.';
+    } finally {
         saving.value = false;
     }
 }
@@ -207,5 +330,8 @@ async function handleLogout() {
     router.push({ name: 'login' });
 }
 
-onMounted(fetchMatch);
+onMounted(async () => {
+    await fetchMatch();
+    await fetchEvents();
+});
 </script>

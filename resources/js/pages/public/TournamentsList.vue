@@ -93,6 +93,12 @@
                             >
                                 Bracket
                             </router-link>
+                            <router-link
+                                :to="{ name: 'public.topscorers', params: { slug: featured.slug } }"
+                                class="border border-pitch-600 px-5 py-2.5 rounded-md hover:border-gold-400/50 hover:bg-pitch-800/40 transition text-sm"
+                            >
+                                Top Scorer
+                            </router-link>
                         </div>
                     </div>
                 </div>

@@ -47,4 +47,9 @@ class MatchGame extends Model
     {
         return $this->belongsTo(Team::class, 'winner_team_id');
     }
+
+    public function events()
+    {
+        return $this->hasMany(MatchEvent::class, 'match_id');
+    }
 }

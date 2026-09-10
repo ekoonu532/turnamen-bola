@@ -66,6 +66,23 @@ const routes = [
         component: () => import('../pages/GroupAnnouncement.vue'),
         meta: { requiresAuth: true },
     },
+    {
+        path: '/admin/teams/:teamId/players',
+        name: 'players.manage',
+        component: () => import('../pages/PlayersManage.vue'),
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/tournaments/:id/top-scorers',
+        name: 'topscorers.index',
+        component: () => import('../pages/TopScorersIndex.vue'),
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/turnamen/:slug/top-scorer',
+        name: 'public.topscorers',
+        component: () => import('../pages/public/TopScorers.vue'),
+    },
 ];
 
 const router = createRouter({

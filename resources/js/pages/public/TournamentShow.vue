@@ -13,25 +13,30 @@
                 {{ formatDate(tournament.start_date) }} — {{ formatDate(tournament.end_date) }}
             </p>
 
-            <!-- ganti grid-cols-3 gap-3 jadi ini -->
-            <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-10">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-10">
                 <router-link
-                    :to="{ name: 'public.matches', params: { id: tournamentId } }"
+                    :to="{ name: 'public.matches', params: { slug: tournamentSlug } }"
                     class="border border-pitch-600 rounded-lg p-3 sm:p-4 text-center hover:border-gold-400/50 hover:bg-pitch-800/40 transition"
                 >
                     <p class="text-xs sm:text-sm font-medium">Jadwal</p>
                 </router-link>
                 <router-link
-                    :to="{ name: 'public.standings', params: { id: tournamentId } }"
+                    :to="{ name: 'public.standings', params: { slug: tournamentSlug } }"
                     class="border border-pitch-600 rounded-lg p-3 sm:p-4 text-center hover:border-gold-400/50 hover:bg-pitch-800/40 transition"
                 >
                     <p class="text-xs sm:text-sm font-medium">Klasemen</p>
                 </router-link>
                 <router-link
-                    :to="{ name: 'public.bracket', params: { id: tournamentId } }"
+                    :to="{ name: 'public.bracket', params: { slug: tournamentSlug } }"
                     class="border border-pitch-600 rounded-lg p-3 sm:p-4 text-center hover:border-gold-400/50 hover:bg-pitch-800/40 transition"
                 >
                     <p class="text-xs sm:text-sm font-medium">Bracket</p>
+                </router-link>
+                <router-link
+                    :to="{ name: 'public.topscorers', params: { slug: tournamentSlug } }"
+                    class="border border-pitch-600 rounded-lg p-3 sm:p-4 text-center hover:border-gold-400/50 hover:bg-pitch-800/40 transition"
+                >
+                    <p class="text-xs sm:text-sm font-medium">Top Scorer</p>
                 </router-link>
             </div>
 
@@ -60,9 +65,8 @@ import StatusBadge from '../../components/StatusBadge.vue';
 import Footer from '../../components/Footer.vue';
 
 const route = useRoute();
-const tournamentId = route.params.id;
-const tournament = ref(null);
 const tournamentSlug = route.params.slug;
+const tournament = ref(null);
 
 function formatDate(d) {
     if (!d) return '';

@@ -59,6 +59,9 @@
                             <button @click="startEdit(team)" class="text-sm text-pitch-400 hover:text-gold-400 transition">Edit</button>
                             <button @click="handleDelete(team)" class="text-sm text-pitch-400 hover:text-clay-500 transition">Hapus</button>
                         </template>
+                        <button @click="$router.push({ name: 'players.manage', params: { teamId: team.id } })" class="text-sm text-pitch-400 hover:text-gold-400 transition">
+                            Pemain
+                        </button>
                     </div>
                 </li>
             </ul>
