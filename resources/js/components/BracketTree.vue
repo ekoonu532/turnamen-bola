@@ -28,6 +28,8 @@
 </template>
 
 <script setup>
+import BracketSlot from './BracketSlot.vue';
+
 defineProps({
     semifinals: { type: Array, required: true },
     final: { type: Object, default: null },

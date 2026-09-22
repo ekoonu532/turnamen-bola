@@ -77,6 +77,42 @@
                 </button>
             </div>
 
+                        <!-- ── Ubah Jadwal ── -->
+            <div class="mt-6 border border-pitch-600 rounded-lg p-4 sm:p-5">
+                <p class="text-sm text-pitch-400 mb-3">Jadwal Pertandingan</p>
+
+                <div class="flex flex-col sm:flex-row gap-2 mb-3">
+                    <input
+                        v-model="scheduleDate"
+                        type="date"
+                        class="flex-1 bg-pitch-800 border border-pitch-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400"
+                    />
+                    <input
+                        v-model="scheduleTime"
+                        type="time"
+                        class="w-full sm:w-32 bg-pitch-800 border border-pitch-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400"
+                    />
+                </div>
+
+                <input
+                    v-model="venue"
+                    type="text"
+                    placeholder="Venue (opsional)"
+                    class="w-full bg-pitch-800 border border-pitch-600 rounded-md px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-gold-400"
+                />
+
+                <p v-if="scheduleError" class="text-xs text-clay-500 mb-3">{{ scheduleError }}</p>
+                <p v-if="scheduleMessage" class="text-xs text-lime-400 mb-3">{{ scheduleMessage }}</p>
+
+                <button
+                    @click="handleReschedule"
+                    :disabled="reschedulingSaving"
+                    class="w-full sm:w-auto bg-gold-400 text-pitch-950 font-semibold px-4 py-2 rounded-md hover:bg-gold-500 transition disabled:opacity-60"
+                >
+                    {{ reschedulingSaving ? 'Menyimpan...' : 'Simpan Jadwal' }}
+                </button>
+            </div>
+
             <!-- ── Pencetak Gol ── -->
             <div v-if="match.status === 'finished'" class="mt-6 border border-pitch-600 rounded-lg p-4 sm:p-5">
                 <p class="text-sm text-pitch-400 mb-3">Pencetak Gol</p>
@@ -194,6 +230,14 @@ const error = ref('');
 const message = ref('');
 const saving = ref(false);
 
+// ── State untuk ubah jadwal ──
+const scheduleDate = ref('');
+const scheduleTime = ref('');
+const venue = ref('');
+const scheduleError = ref('');
+const scheduleMessage = ref('');
+const reschedulingSaving = ref(false);
+
 // ── State untuk pencatatan gol ──
 const events = ref([]);
 const eventForm = reactive({ team_id: '', player_id: '', minute: null });
@@ -234,6 +278,37 @@ async function fetchMatch() {
     awayScore.value = data.away_score ?? 0;
     homePenalty.value = data.home_penalty;
     awayPenalty.value = data.away_penalty;
+
+    if (data.scheduled_at) {
+        const dt = new Date(data.scheduled_at);
+        scheduleDate.value = dt.toISOString().slice(0, 10);
+        scheduleTime.value = dt.toTimeString().slice(0, 5);
+    }
+    venue.value = data.venue ?? '';
+}
+
+async function handleReschedule() {
+    if (!scheduleDate.value || !scheduleTime.value) {
+        scheduleError.value = 'Tanggal dan jam wajib diisi.';
+        return;
+    }
+
+    scheduleError.value = '';
+    scheduleMessage.value = '';
+    reschedulingSaving.value = true;
+
+    try {
+        await api.patch(`/matches/${matchId}/reschedule`, {
+            scheduled_at: `${scheduleDate.value} ${scheduleTime.value}:00`,
+            venue: venue.value || null,
+        });
+        scheduleMessage.value = 'Jadwal berhasil diperbarui.';
+        await fetchMatch();
+    } catch (e) {
+        scheduleError.value = e.response?.data?.message || 'Gagal mengubah jadwal.';
+    } finally {
+        reschedulingSaving.value = false;
+    }
 }
 
 async function fetchEvents() {
