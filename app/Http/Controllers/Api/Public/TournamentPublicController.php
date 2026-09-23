@@ -53,6 +53,7 @@ class TournamentPublicController extends Controller
             ->get([
                 'id', 'group_id', 'stage', 'home_team_id', 'away_team_id',
                 'venue', 'scheduled_at', 'home_score', 'away_score',
+                'home_penalty', 'away_penalty',
                 'winner_team_id', 'status',
             ]);
     }
@@ -98,6 +99,7 @@ class TournamentPublicController extends Controller
             ->get([
                 'id', 'stage', 'home_team_id', 'away_team_id',
                 'home_score', 'away_score', 'winner_team_id',
+                'home_penalty', 'away_penalty',
                 'status', 'scheduled_at',
             ])
             ->groupBy('stage');

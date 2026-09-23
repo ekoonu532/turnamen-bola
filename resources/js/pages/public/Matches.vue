@@ -22,7 +22,7 @@
                         {{ stageLabels[stage] ?? stage }}
                     </h2>
                     <div class="space-y-3">
-                        <MatchCard v-for="m in group" :key="m.id" :match="m" :clickable="false" />
+                        <MatchCard v-for="match in group" :key="match.id" :match="match" :clickable="false" />
                     </div>
                 </div>
             </div>

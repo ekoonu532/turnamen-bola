@@ -18,6 +18,9 @@
                 {{ isFinished ? match.away_score : '' }}
             </span>
         </div>
+        <p v-if="isFinished && match.stage !== 'group' && match.home_penalty !== null && match.home_penalty !== undefined" class="text-[10px] text-pitch-400 mt-1">
+            ({{ match.home_penalty }}-{{ match.away_penalty }} pen)
+        </p>
         <p v-if="!isFinished" class="text-[11px] text-pitch-400 mt-2">vs</p>
     </div>
 </template>
