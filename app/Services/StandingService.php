@@ -98,11 +98,14 @@ class StandingService
 
     public function isMatchLocked(\App\Models\MatchGame $match): bool
     {
-        if (! in_array($match->stage, ['semifinal'])) {
-            return false; // hanya semifinal yang bisa mengunci (karena final bergantung padanya)
+        if ($match->stage !== 'semifinal') {
+            return false;
         }
 
-        return $match->tournament->matches()->where('stage', 'final')->exists();
+        return $match->tournament->matches()
+            ->where('stage', 'final')
+            ->whereNotNull('home_team_id') // hanya terkunci kalau Final SUDAH terisi tim asli, bukan placeholder kosong
+            ->exists();
     }
 
     public function withdrawTeam(\App\Models\Team $team): void
