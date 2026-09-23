@@ -123,4 +123,34 @@ class KnockoutService
 
         return $matches;
     }
+
+    public function autoAdvanceSemifinal(\App\Models\Tournament $tournament): void
+    {
+        $semifinals = $tournament->matches()->where('stage', 'semifinal')->orderBy('id')->get();
+
+        if ($semifinals->count() !== 2) {
+            return;
+        }
+
+        [$sf1, $sf2] = $semifinals->values();
+
+        $final = $tournament->matches()->where('stage', 'final')->first();
+        $thirdPlace = $tournament->matches()->where('stage', 'third_place')->first();
+
+        if (in_array($sf1->status, ['finished', 'walkover']) && $sf1->winner_team_id) {
+            $winner = $sf1->winner_team_id;
+            $loser = $sf1->home_team_id === $winner ? $sf1->away_team_id : $sf1->home_team_id;
+
+            $final?->update(['home_team_id' => $winner]);
+            $thirdPlace?->update(['home_team_id' => $loser]);
+        }
+
+        if (in_array($sf2->status, ['finished', 'walkover']) && $sf2->winner_team_id) {
+            $winner = $sf2->winner_team_id;
+            $loser = $sf2->home_team_id === $winner ? $sf2->away_team_id : $sf2->home_team_id;
+
+            $final?->update(['away_team_id' => $winner]);
+            $thirdPlace?->update(['away_team_id' => $loser]);
+        }
+    }
 }

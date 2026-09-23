@@ -102,9 +102,10 @@ class StandingService
             return false;
         }
 
+        // Hanya terkunci kalau Final SUDAH DIMAINKAN (ada hasil), bukan cuma placeholder/auto-terisi
         return $match->tournament->matches()
             ->where('stage', 'final')
-            ->whereNotNull('home_team_id') // hanya terkunci kalau Final SUDAH terisi tim asli, bukan placeholder kosong
+            ->whereIn('status', ['finished', 'walkover'])
             ->exists();
     }
 

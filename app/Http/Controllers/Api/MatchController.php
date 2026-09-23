@@ -11,8 +11,10 @@ use Illuminate\Http\Request;
 
 class MatchController extends Controller
 {
-    public function __construct(protected StandingService $standingService)
-    {
+    public function __construct(
+        protected StandingService $standingService,
+        protected \App\Services\KnockoutService $knockoutService
+    ) {
     }
 
     public function index(Tournament $tournament)
@@ -81,6 +83,10 @@ class MatchController extends Controller
             $this->standingService->recalculate($match->group_id);
         }
 
+        if ($match->stage === 'semifinal') {
+            $this->knockoutService->autoAdvanceSemifinal($match->tournament);
+        }
+
         return response()->json([
             'message' => 'Skor berhasil disimpan.',
             'match' => $match->fresh(['homeTeam', 'awayTeam']),
@@ -127,6 +133,11 @@ class MatchController extends Controller
 
         if ($match->group_id) {
             $this->standingService->recalculate($match->group_id);
+        }
+
+        // ── Baru ──
+        if ($match->stage === 'semifinal') {
+            $this->knockoutService->autoAdvanceSemifinal($match->tournament);
         }
 
         return response()->json([
